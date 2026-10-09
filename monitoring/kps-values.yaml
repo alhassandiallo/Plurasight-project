@@ -1,0 +1,51 @@
+# kube-prometheus-stack values tuned for a small AKS sandbox cluster.
+# AKS manages the control plane, so etcd/scheduler/controller-manager/kube-proxy are not scrapable.
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+defaultRules:
+  create: true
+  rules:
+    etcd: false
+    kubeSchedulerAlerting: false
+    kubeSchedulerRecording: false
+    kubeControllerManager: false
+    kubeProxy: false
+
+# Not needed for the demo; saves CPU/memory on a small cluster.
+alertmanager:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    # Pick up ServiceMonitors/PodMonitors/rules from any namespace, not only those labelled with the Helm release.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
+    retention: 6h
+    resources:
+      requests: { cpu: 200m, memory: 700Mi }
+      limits: { memory: 1500Mi }
+
+grafana:
+  adminUser: admin
+  adminPassword: admin-change-me
+  defaultDashboardsTimezone: browser
+  service:
+    type: ClusterIP
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      searchNamespace: ALL
+  resources:
+    requests: { cpu: 100m, memory: 200Mi }
+    limits: { memory: 500Mi }

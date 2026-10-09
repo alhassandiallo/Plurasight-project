@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-generator
+  namespace: demo
+  labels: { app: traffic-generator }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: traffic-generator }
+  template:
+    metadata:
+      labels: { app: traffic-generator }
+    spec:
+      containers:
+        - name: curl
+          image: curlimages/curl:8.10.1
+          command: ["sh", "-c"]
+          args:
+            - |
+              while true; do
+                curl -s -o /dev/null http://catalog:8080/api/v1/catalog/items
+                curl -s -o /dev/null http://catalog:8080/api/v1/catalog/items/conc001
+                curl -s -o /dev/null -X POST http://basket:8080/api/v1/basket/checkout \
+                  -H 'Content-Type: application/json' \
+                  -d '{"basketId":"demo","concertIds":["conc001","conc002"]}'
+                sleep 2
+              done
+          resources:
+            requests: { cpu: 10m, memory: 16Mi }
+            limits: { memory: 64Mi }

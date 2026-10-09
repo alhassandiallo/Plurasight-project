@@ -1,0 +1,18 @@
+# Applied AFTER kube-prometheus-stack (needs the ServiceMonitor CRD). Release name must be "kps".
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: otel-collector
+  namespace: monitoring
+  labels:
+    release: kps
+spec:
+  namespaceSelector:
+    matchNames: [demo]
+  selector:
+    matchLabels: { app: otel-collector }
+  endpoints:
+    - port: prom-metrics
+      path: /metrics
+      interval: 15s
+      honorLabels: true

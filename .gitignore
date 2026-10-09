@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+.env
+scripts/.sandbox.resolved.env
+scripts/.aks-create.err

@@ -1,0 +1,36 @@
+{
+  "uid": "dotnet-otel-demo",
+  "title": ".NET OTel Demo - Services",
+  "tags": ["otel", "dotnet"],
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-30m", "to": "now" },
+  "templating": { "list": [] },
+  "panels": [
+    {
+      "id": 1, "type": "timeseries", "title": "HTTP requests / sec by service",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "sum by (service_name) (rate(http_server_duration_milliseconds_count[1m]))", "legendFormat": "{{service_name}}" } ]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "p95 request latency (ms) by service",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le, service_name) (rate(http_server_duration_milliseconds_bucket[2m])))", "legendFormat": "{{service_name}}" } ]
+    },
+    {
+      "id": 3, "type": "timeseries", "title": "GC heap size (bytes)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "sum by (service_name) (process_runtime_dotnet_gc_objects_size_bytes)", "legendFormat": "{{service_name}}" } ]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Thread pool threads",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [ { "refId": "A", "expr": "sum by (service_name) (process_runtime_dotnet_thread_pool_threads_count)", "legendFormat": "{{service_name}}" } ]
+    }
+  ]
+}

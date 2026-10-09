@@ -1,0 +1,19 @@
+# Extra overrides for a single 2-vCPU / 4 GiB node (applied after kps-values.yaml).
+prometheus:
+  prometheusSpec:
+    retention: 2h
+    resources:
+      requests: { cpu: 100m, memory: 400Mi }
+      limits: { memory: 900Mi }
+grafana:
+  resources:
+    requests: { cpu: 50m, memory: 128Mi }
+    limits: { memory: 350Mi }
+prometheusOperator:
+  resources:
+    requests: { cpu: 20m, memory: 64Mi }
+    limits: { memory: 200Mi }
+kube-state-metrics:
+  resources:
+    requests: { cpu: 10m, memory: 32Mi }
+    limits: { memory: 128Mi }
